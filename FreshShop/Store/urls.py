@@ -6,5 +6,15 @@ urlpatterns = [
     path('login/', login),
     path('index/', index),
     re_path('^$', index),
+    path('buttons/', buttons),
+    path('cards/', cards),
+    path('register_store/', register_store),
+    path('add_goods/', add_goods),
+    path('list_goods/', list_goods),
 
+
+]
+
+urlpatterns +=[
+    path('base/', base),
 ]
