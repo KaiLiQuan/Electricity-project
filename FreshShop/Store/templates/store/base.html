@@ -27,6 +27,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
+
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
@@ -41,18 +42,12 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
+        {% if request.COOKIES.has_store %}
       <li class="nav-item">
-        {% if is_store %}
         <a class="nav-link" href="index.html">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>店铺管理</span>
+          <span>已有店铺</span>
         </a>
-        {% else %}
-        <a class="nav-link" href="index.html">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>没有店铺，请注册</span>
-        </a>
-        {% endif %}
       </li>
 
       <!-- Divider -->
@@ -74,13 +69,19 @@
             <h6 class="collapse-header">商品管理:</h6>
             <a class="collapse-item" href="/Store/add_goods/">添加商品</a>
             <a class="collapse-item" href="/Store/list_goods/">商品列表</a>
-            <a class="collapse-item" href="cards.html">商品详情</a>
           </div>
         </div>
       </li>
+         {% else %}
+         <li class="nav-item">
+        <a class="nav-link" href="/Store/register_store/">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>没有店铺，请注册</span>
+        </a>
+      </li>
+        {% endif %}
     </ul>
     <!-- End of Sidebar -->
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 

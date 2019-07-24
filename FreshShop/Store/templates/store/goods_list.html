@@ -23,12 +23,12 @@
         <tbody>
             {% for goods in page %}
                 <tr>
-                    <td>{{ goods.goods_name }}</td>
+                    <td><a href="/Store/goods/{{ goods.id }}">{{ goods.goods_name }}</a></td>
                     <td>
                         <input type="text" value="{{ goods.goods_price }}">
                     </td>
                     <td>{{ goods.goods_number }}</td>
-                    <td>{{ goods.goods_date }}</td>
+                    <td>{{ goods.goods_date |date:"Y-m-d"}}</td>
                     <td>{{ goods.goods_safeDate }}</td>
                     <td>
                         <a class="btn btn-danger" href="#">下架</a>
