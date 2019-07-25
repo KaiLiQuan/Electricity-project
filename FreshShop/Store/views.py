@@ -143,19 +143,23 @@ def add_goods(request):
 # Create your views here.
 
 @loginValid
-def list_goods(request):
+def list_goods(request,state):
+    if state == "up":
+        state_num = 1
+    else:
+        state_num = 0
     keywords = request.GET.get("keywords","")
     page_num = request.GET.get("page_num",1)
     store_id = request.COOKIES.get("has_store")
     store = Store.objects.get(id =int(store_id))
     if keywords:
-        goods_list = store.goods_set.filter(goods_name__contains=keywords)
+        goods_list = store.goods_set.filter(goods_name__contains=keywords,goods_under=state_num)
     else:
-        goods_list = store.goods_set.all()
+        goods_list = store.goods_set.filter(goods_under=state_num)
     paginator = Paginator(goods_list,3)
     page = paginator.page(int(page_num))
     page_range = paginator.page_range
-    return render(request,"store/goods_list.html",{"page":page,"page_range":page_range,"keywords":keywords})
+    return render(request,"store/goods_list.html",{"page":page,"page_range":page_range,"keywords":keywords,"state":state})
 
 
 @loginValid
@@ -187,3 +191,21 @@ def update_goods(request,goods_id):
         goods.save()
         return HttpResponseRedirect("/Store/goods/%s/"%goods_id)
     return render(request,"store/update_goods.html",locals())
+
+
+
+def set_goods(request,state):
+    if state == "up":
+        state_num = 1
+    else:
+        state_num = 0
+    id = request.GET.get("id")
+    referer = request.META.get("HTTP_REFERER")
+    if id:
+        goods = Goods.objects.filter(id = id).first()
+        if state == "delete":
+            goods.delete()
+        else:
+            goods.goods_under = state_num
+            goods.save()
+    return HttpResponseRedirect(referer)
