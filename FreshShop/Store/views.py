@@ -113,6 +113,7 @@ def register_store(request):
 
 @loginValid
 def add_goods(request):
+    goods_type_list = GoodsType.objects.all()
     if request.method == "POST":
         goods_name = request.POST.get("goods_name")
         goods_price = request.POST.get("goods_price")
@@ -120,8 +121,9 @@ def add_goods(request):
         goods_description = request.POST.get("goods_description")
         goods_date = request.POST.get("goods_date")
         goods_safeDate = request.POST.get("goods_safeDate")
+        goods_type = request.POST.get("goods_type")
         # goods_store = request.COOKIES.get("has_store")
-        goods_store = request.POST.get("goods_store")
+        goods_store = request.COOKIES.get("has_store")
         goods_image = request.FILES.get("goods_image")
 
         goods = Goods()
@@ -132,14 +134,15 @@ def add_goods(request):
         goods.goods_date = goods_date
         goods.goods_safeDate = goods_safeDate
         goods.goods_image = goods_image
+        goods.goods_type = GoodsType.objects.get(id = int(goods_type))
         goods.save()
 
         goods.store_id.add(
             Store.objects.get(id = int(goods_store))
         )
         goods.save()
-        return HttpResponseRedirect("/Store/list_goods/")
-    return render(request,"store/add_goods.html")
+        return HttpResponseRedirect("/Store/list_goods/up/")
+    return render(request,"store/add_goods.html",locals())
 # Create your views here.
 
 @loginValid
@@ -209,3 +212,33 @@ def set_goods(request,state):
             goods.goods_under = state_num
             goods.save()
     return HttpResponseRedirect(referer)
+
+
+def logout(request):
+    response = HttpResponseRedirect("/Store/login/")
+    for key in request.COOKIES:
+        response.delete_cookie(key)
+        return response
+
+
+@loginValid
+def list_goods_type(request):
+    goods_type_list = GoodsType.objects.all()
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        picture = request.FILES.get("picture")
+
+        goods_type = GoodsType()
+        goods_type.name = name
+        goods_type.description = description
+        goods_type.picture = picture
+        goods_type.save()
+    return render(request,"store/goods_type_list.html",locals())
+
+@loginValid
+def delete_goods_type(request):
+    id = int(request.GET.get("id"))
+    goods = GoodsType.objects.get(id = id)
+    goods.delete()
+    return HttpResponseRedirect("/Store/list_goods_type")
